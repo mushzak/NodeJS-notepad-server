@@ -85,6 +85,10 @@ class NotesManager {
         }, id);
     }
 
+    getChartData(req) {
+
+    }
+
 }
 
 module.exports = NotesManager;

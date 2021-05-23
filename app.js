@@ -3,11 +3,14 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const cors = require('cors')
 
 const indexRouter = require('./routes/index');
 const notesRouter = require('./routes/notes');
 
 const app = express();
+
+app.use(cors())
 
 // view engine setup
 
