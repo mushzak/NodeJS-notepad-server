@@ -12,6 +12,13 @@ router.get('/', function (req, res, next) {
     });
 });
 
+router.get('/chart', function (req, res, next) {
+    let manager = new NotesManager();
+    manager.fetchByDate(req.query,(err, response) => {
+        return res.send(response);
+    });
+});
+
 /**
  * Get notes by id
  */

@@ -37,8 +37,13 @@ class NotesManager {
         });
     }
 
+    /**
+     * Fetch notes by ID
+     * @param id
+     * @param callback
+     */
     fetchById(id, callback) {
-        let query = "SELECT * FROM notes ORDER BY created_at DESC where id = ${id}";
+        let query = `SELECT * FROM notes where id = ${id} ORDER BY created_at DESC`;
         dbConn.query(query, function (err, res) {
             if (err) {
                 callback(err);
@@ -90,6 +95,7 @@ class NotesManager {
      */
     update(id, data, callback) {
         this.fetchById(id, (err, res) => {
+            console.log(err);
             if (err || res.length === 0) {
                 callback({success: false, reason: "Unknown id is specified"});
                 return;
@@ -104,6 +110,26 @@ class NotesManager {
                 }
             });
 
+        });
+    }
+
+    /**
+     * Fetch notes by given date (from, to)
+     * @param params
+     * @param callback
+     */
+    fetchByDate(params, callback) {
+        console.log(params)
+        let query = `SELECT * FROM notes`;
+        query += ` where created_at >= "${params.from}" and created_at <= "${params.to}"`
+        query += " ORDER BY created_at DESC";
+        console.log(query);
+        dbConn.query(query, function (err, res) {
+            if (err) {
+                callback(err);
+            } else {
+                callback(null, res);
+            }
         });
     }
 
