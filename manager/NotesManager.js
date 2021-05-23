@@ -16,7 +16,7 @@ class NotesManager {
      * @param id
      */
     fetch(callback, id = null) {
-        let query = "select * from notes";
+        let query = "SELECT * FROM notes ORDER BY id DESC";
         if(id) {
             query += ` where id = ${id}`
         }

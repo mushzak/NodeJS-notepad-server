@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const NotesManager = require("../manager/NotesManager");
 
+/**
+ * Get notes
+ */
 router.get('/', function (req, res, next) {
     let manager = new NotesManager();
     manager.fetch((err, response) => {
@@ -9,6 +12,9 @@ router.get('/', function (req, res, next) {
     });
 });
 
+/**
+ * Get notes by id
+ */
 router.get('/:id', function (req, res, next) {
     let manager = new NotesManager();
     manager.fetch((err, response) => {
@@ -16,6 +22,9 @@ router.get('/:id', function (req, res, next) {
     }, req.params.id);
 });
 
+/**
+ * Create note
+ */
 router.post('/', function (req, res, next) {
     let manager = new NotesManager();
     manager.create(req, (err, response) => {
@@ -25,6 +34,9 @@ router.post('/', function (req, res, next) {
     })
 })
 
+/**
+ * Update note
+ */
 router.put('/:id', function (req, res, next) {
     let manager = new NotesManager();
     manager.update(req.params.id, req.body, (err, response) => {
@@ -35,6 +47,9 @@ router.put('/:id', function (req, res, next) {
     })
 })
 
+/**
+ * Delete note
+ */
 router.delete('/:id', function (req, res, next) {
     let manager = new NotesManager();
     manager.delete(req.params.id, (err, response) => {
