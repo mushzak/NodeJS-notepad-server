@@ -7,7 +7,7 @@ const NotesManager = require("../manager/NotesManager");
  */
 router.get('/', function (req, res, next) {
     let manager = new NotesManager();
-    manager.fetch((err, response) => {
+    manager.fetch(req.query,(err, response) => {
         return res.send(response);
     });
 });
@@ -39,7 +39,7 @@ router.post('/', function (req, res, next) {
  */
 router.put('/:id', function (req, res, next) {
     let manager = new NotesManager();
-    manager.update(req.params.id, req.body, (err, response) => {
+    manager.update(req.params.id, req.body, (err, data) => {
         if (!err) {
             return res.send(true)
         }
@@ -51,10 +51,11 @@ router.put('/:id', function (req, res, next) {
  * Delete note
  */
 router.delete('/:id', function (req, res, next) {
-    let manager = new NotesManager();
-    manager.delete(req.params.id, (err, response) => {
+    const manager = new NotesManager();
+    const id = req.params.id;
+    manager.delete(id, (err, response) => {
         if (!err) {
-            return res.send(true)
+            return res.send(id)
         }
     })
 })
