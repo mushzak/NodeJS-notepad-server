@@ -1,61 +1,47 @@
 const express = require('express');
 const router = express.Router();
-const dbConn  = require('../conf/db');
-const moment = require("moment");
+const NotesManager = require("../manager/NotesManager");
 
 router.get('/', function(req, res, next) {
-    let query = "select * from notes";
-    dbConn.query(query, function(err,rows) {
-        if(err) {
-            res.send({data:''});
-        } else {
-            res.send(rows);
-        }
+    let manager = new NotesManager();
+    manager.fetch((err, response) => {
+        return res.send(response);
     });
 });
 
 router.get('/:id', function(req, res, next) {
-    let id = req.params.id;
-    // @todo Validations.validateInteger()
-    let query = `select * from notes where id = ${id}`;
-    dbConn.query(query, function(err,row) {
-        if(err) {
-            res.status(400).send("Error occurred");
-        } else {
-            res.send(row);
-        }
-    });
+    let manager = new NotesManager();
+    manager.fetch((err, response) => {
+        return res.send(response);
+    }, req.params.id);
 });
 
 router.post('/', function (req, res, next) {
-    // @todo Validate params data (title, description)
-    let now = moment().format()
-    let query = `Insert into notes (title, description, created_at, updated_at) values ('${req.body.title}', '${req.body.description}', '${now}', '${now}')`;
-    console.log(query)
-    dbConn.query(query, function(err, row) {
-        if(err) {
-            res.status(400).send("Error occurred");
-        } else {
-            res.send(row);
+    let manager = new NotesManager();
+    manager.create(req, (err, response) => {
+        if(!err) {
+            return res.send(true)
         }
-    });
+    })
 })
 
 router.put('/:id', function (req, res, next) {
-    let body = req.body;
-    let noteQuery = "sel"
+    let manager = new NotesManager();
+    manager.update(req.params.id, req.body, (err, response) => {
+        if(!err) {
+            return res.send(true)
+        }
+        return res.status(400).send(err)
+    })
 })
 
 router.delete('/:id', function (req, res, next) {
-    let id = req.params.id;
-    let query = `delete from notes where id = ${id}`;
-    dbConn.query(query, function(err,row) {
-        if(err) {
-            res.status(400).send("Error occurred");
-        } else {
-            res.send(true);
+    let manager = new NotesManager();
+    manager.delete(req.params.id, (err, response) => {
+        if(!err) {
+            return res.send(true)
         }
-    });
+    })
 })
 
 module.exports = router;
