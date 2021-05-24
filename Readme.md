@@ -54,7 +54,7 @@ Step 4: Seed mock data (OPTIONAL). This command will insert 5000 rows into your 
 npm run seed
 ```
 
-Step 3: To start the express server, run the following
+Step 5: To start the express server, run the following
 ```bash
 npm start
 ```

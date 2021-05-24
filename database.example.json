@@ -1,9 +1,0 @@
-{
-  "dev": {
-    "host": "localhost",
-    "driver": "mysql",
-    "user": "root",
-    "database": "notepad",
-    "password": ""
-  }
-}

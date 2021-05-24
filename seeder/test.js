@@ -20,6 +20,7 @@ function test() {
         } else {
             console.info("Data has been successfully inserted")
         }
+        process.exit(0);
     });
 }
 
