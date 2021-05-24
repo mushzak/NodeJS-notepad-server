@@ -23,9 +23,9 @@ class NotesManager {
         let query;
 
         if (target && target.length > 0) {
-            query = `SELECT * FROM notes where title like '%${target}%' or description like '%${target}%' order by created_at desc limit ${limit} offset ${offset}`;
+            query = `SELECT * FROM notes where title like '%${target}%' or description like '%${target}%' order by id desc limit ${limit} offset ${offset}`;
         } else {
-            query = `SELECT * FROM notes order by created_at desc limit ${limit} offset ${offset}`;
+            query = `SELECT * FROM notes order by id desc limit ${limit} offset ${offset}`;
         }
 
         dbConn.query(query, function (err, res) {
@@ -128,13 +128,14 @@ class NotesManager {
         }
 
         // This query returns data until the mentioned date.
-        let query = `SELECT DATE_FORMAT(created_at , '%m/%d/%Y') as name,
-                    (SELECT COUNT(*) 
-                    FROM notes AS n2 where n2.created_at < n1.created_at) AS value
-                    FROM notes AS n1
-                    where created_at >= '${params.from}' and created_at <= '${params.to}'
-                    group by name
-                    order by n1.created_at asc`;
+        let query = `select DATE_FORMAT(created_at , '%m/%d/%Y') as name,
+               (select count(*) from notes as n2
+               where STR_TO_DATE(n2.created_at , '%Y-%m-%d') < STR_TO_DATE(n1.created_at , '%Y-%m-%d')
+                ) as value
+                from notes as n1
+                where created_at >= '${params.from}' and created_at <= '${params.to}'
+                group by name, value
+                order by STR_TO_DATE(name, '%m/%d/%Y'), value`;
 
         dbConn.query(query, function (err, res) {
             if (err) {
