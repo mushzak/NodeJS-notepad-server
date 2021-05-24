@@ -134,7 +134,7 @@ class NotesManager {
                     FROM notes AS n1
                     where created_at >= '${params.from}' and created_at <= '${params.to}'
                     group by name
-                    order by n1.created_at desc`;
+                    order by n1.created_at asc`;
 
         dbConn.query(query, function (err, res) {
             if (err) {
