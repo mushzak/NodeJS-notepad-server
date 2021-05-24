@@ -22,7 +22,7 @@ class NotesManager {
         let target = data.query;
         let query;
 
-        if(target && target.length > 0) {
+        if (target && target.length > 0) {
             query = `SELECT * FROM notes where title like '%${target}%' or description like '%${target}%' order by created_at desc limit ${limit} offset ${offset}`;
         } else {
             query = `SELECT * FROM notes order by created_at desc limit ${limit} offset ${offset}`;
@@ -75,7 +75,11 @@ class NotesManager {
      * @param callback
      */
     create(req, callback) {
-        // @todo Validate params data (title, description)
+        if(!req.body.title || !req.body.description || req.body.title.length === 0 || req.body.description === 0) {
+            callback("Missing required fields")
+            return;
+        }
+
         let now = moment().format()
         let query = `Insert into notes (title, description, created_at, updated_at) values ('${req.body.title}', '${req.body.description}', '${now}', '${now}')`;
         dbConn.query(query, function (err, row) {
@@ -95,7 +99,6 @@ class NotesManager {
      */
     update(id, data, callback) {
         this.fetchById(id, (err, res) => {
-            console.log(err);
             if (err || res.length === 0) {
                 callback({success: false, reason: "Unknown id is specified"});
                 return;
@@ -119,11 +122,20 @@ class NotesManager {
      * @param callback
      */
     fetchByDate(params, callback) {
-        console.log(params)
-        let query = `SELECT * FROM notes`;
-        query += ` where created_at >= "${params.from}" and created_at <= "${params.to}"`
-        query += " ORDER BY created_at DESC";
-        console.log(query);
+        if(!params.from || !params.to) {
+            callback("Dates are required")
+            return;
+        }
+
+        // This query returns data until the mentioned date.
+        let query = `SELECT DATE_FORMAT(created_at , '%m/%d/%Y') as name,
+                    (SELECT COUNT(*) 
+                    FROM notes AS n2 where n2.created_at < n1.created_at) AS value
+                    FROM notes AS n1
+                    where created_at >= '${params.from}' and created_at <= '${params.to}'
+                    group by name
+                    order by n1.created_at desc`;
+
         dbConn.query(query, function (err, res) {
             if (err) {
                 callback(err);
@@ -131,10 +143,6 @@ class NotesManager {
                 callback(null, res);
             }
         });
-    }
-
-    getChartData(req) {
-
     }
 }
 
