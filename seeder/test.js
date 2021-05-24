@@ -1,4 +1,4 @@
-const dbConn = require('./conf/db');
+const dbConn = require('../conf/db');
 const moment = require("moment");
 
 function test() {
